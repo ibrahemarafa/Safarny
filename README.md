@@ -1,12 +1,20 @@
-Platform - Safarny
+Platform - Safarny ✈️
 
-Table of Contents
+📚 Table of Contents
 
 Overview
 
 Background
 
 Features
+
+User Registration and Login
+
+Tourist Features
+
+Admin Features
+
+Payment Integration
 
 Database Schema
 
@@ -18,88 +26,110 @@ Use Case Diagram
 
 ERD Diagram
 
-Overview
+🧭 Overview
 
-Welcome to Safarny – a smart tourism platform designed to assist travelers in exploring Egypt with ease. It connects tourists with destinations, hotels, restaurants, and activities while offering AI-powered recommendations and seamless trip planning. This document outlines the platform's features, its purpose, and how users can benefit from its services.
+Safarny is a smart tourism platform that connects local and international travelers with the best destinations, hotels, restaurants, and activities across Egypt. Powered by intelligent search and personalized trip planning, it simplifies your entire travel experience — from exploration to booking.
 
-Background
+🌍 Background
 
-Planning a trip to Egypt can be overwhelming due to scattered information and lack of personalization. Safarny solves this challenge by providing a unified, intelligent platform that:
+Planning a trip to Egypt can be difficult due to scattered information, lack of personalization, and language barriers. Safarny addresses these issues by offering:
 
-Understands the user's preferences.
+A unified experience that understands your preferences.
 
-Recommends travel packages and destinations accordingly.
+Smart suggestions using AI.
 
-Enables full trip customization and booking online.
+Full trip customization, hotel booking, and payment — all in one place.
 
-Supports both local and international tourists in planning unforgettable journeys.
+Whether you're exploring ancient ruins, relaxing on the beach, or discovering vibrant cities, Safarny is your perfect travel partner.
 
-The platform streamlines the travel experience by combining tourism content, intelligent filtering, and modern UI in one ecosystem.
-
-Features
+✨ Features
 
 🔐 User Registration and Login
 
-Tourists and admins can create accounts.
+Tourists and Admins can create accounts securely.
 
-Role-based access through secure authentication and authorization.
+ASP.NET Core Identity with role-based access (Tourist, Admin).
 
-🙏 Tourist Features
+🧳 Tourist Features
 
-Answer onboarding questions (budget, trip type, duration) to get personalized package suggestions.
+Smart Onboarding:
 
-Browse by categories (Ancient Egypt, Beaches, Cities, Sports).
+Answer 3 key questions: Budget, Trip Type, Number of Days in Egypt.
 
-Explore content organized by city (e.g., Cairo, Alexandria).
+Get personalized package suggestions based on answers.
 
-For each city, view:
+Home Page Categories:
 
-Places with available activities.
+Ancient Egypt, Beaches, Cities, Sports.
 
-Restaurants filtered by food type (e.g., Chinese, breakfast).
+City-Based Navigation:
 
-Hotels with images, features, ratings, available rooms, and online booking.
+View cities like Cairo, Alexandria, etc.
 
-Access ready-made travel packages:
+For each city, explore:
 
-Daily itineraries.
+🏨 Hotels: features, images, rooms, booking, reviews.
 
-Included/excluded services.
+🍽️ Restaurants: filtered by cuisine (e.g., Chinese, Breakfast).
 
-Reviews and comments.
+📍 Places: with activities and descriptions.
 
-Booking for multiple people and full payment.
+Packages Section:
 
-Use the "Plan Your Trip" feature to create a custom itinerary:
+Browse ready-made packages with:
 
-Select cities, activities, and hotels.
+Day-by-day itinerary
 
-View cost breakdown and trip schedule.
+What’s included/excluded
 
-Finalize and book the trip.
+Ratings and reviews
 
-Chat with the AI travel assistant (e.g., "How to go from Cairo to Luxor?").
+Booking for multiple persons + online payment
 
-💼 Admin Features
+Plan Your Trip:
 
-Add and manage:
+Choose cities, activities, and hotels.
 
-Cities, places, restaurants, hotels.
+View real-time trip plan, total cost, number of days.
 
-Packages and custom trip options.
+Book and pay online.
 
-Monitor system usage and user interaction.
+AI Chatbot:
 
-Approve submitted content.
+Ask anything like:
+
+"How do I go from Cairo to Luxor?"
+
+"What’s the best place for a family in Alexandria?"
+
+Powered by DeepSeek / OpenAI APIs.
+
+🛠️ Admin Features
+
+Full CRUD access to:
+
+Cities
+
+Hotels
+
+Restaurants
+
+Tourist places
+
+Packages
+
+Approve user content.
+
+Track system usage and manage listings.
 
 💳 Payment Integration
 
-Online payment support for:
+Online payment system for:
 
-Hotel bookings
+Hotels
 
-Ready-made packages
+Packages
 
 Custom trips
 
-Powered by Paymob and compatible gateways
+Integrated with Paymob or any third-party payment gateway
