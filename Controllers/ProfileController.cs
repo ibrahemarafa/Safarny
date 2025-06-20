@@ -7,9 +7,6 @@ using APIs_Graduation.Models;
 
 namespace APIs_Graduation.Controllers
 {
-
-
-
     [Route("api/profile")]
     [ApiController]
     public class ProfileController : ControllerBase
@@ -21,7 +18,7 @@ namespace APIs_Graduation.Controllers
             _context = context;
         }
 
-        [HttpGet("user-profile/{userId}")]
+        [HttpGet("userProfile/{userId}")]
         public async Task<IActionResult> GetUserProfile(string userId)
         {
             // 1. Get User Basic Information
@@ -35,7 +32,6 @@ namespace APIs_Graduation.Controllers
                     u.PhoneNumber,
                     u.FirstName,
                     u.LastName,
-                   
                 })
                 .FirstOrDefaultAsync();
 
@@ -60,7 +56,6 @@ namespace APIs_Graduation.Controllers
                     b.CheckOutDate,
                     b.Status,
                     b.TotalPrice,
-                    
                 })
                 .OrderByDescending(b => b.Status)
                 .ToListAsync();
@@ -113,8 +108,7 @@ namespace APIs_Graduation.Controllers
                 .OrderByDescending(b => b.BookingDate)
                 .ToListAsync();
 
-            // 5. Combine results
-            // 5. Combine results
+            // 5. Combine results and stats
             var result = new
             {
                 User = user,
@@ -124,27 +118,21 @@ namespace APIs_Graduation.Controllers
                     Packages = packageBookings,
                     CustomTrips = customTrips
                 },
-                // 5. Calculate Stats
                 stats = new
                 {
-                   
-
                     UpcomingTrips =
-                        hotelBookings.Where(h => h.CheckInDate > DateTime.Now).Count() +
-                        packageBookings.Where(p => p.TripDate > DateTime.Now).Count() +
-                        customTrips.Where(c => c.Details.Any(d => d.CheckInDate > DateTime.Now)).Count(),
+                        hotelBookings.Count(h => h.CheckInDate > DateTime.Now) +
+                        packageBookings.Count(p => p.TripDate > DateTime.Now) +
+                        customTrips.Count(c => c.Details.Any(d => d.CheckInDate > DateTime.Now)),
 
                     PastTrips =
-                        hotelBookings.Where(h => h.CheckOutDate < DateTime.Now).Count() +
-                        packageBookings.Where(p => p.TripDate < DateTime.Now).Count() +
-                        customTrips.Where(c => c.Details.Any(d => d.CheckOutDate < DateTime.Now)).Count()
+                        hotelBookings.Count(h => h.CheckOutDate < DateTime.Now) +
+                        packageBookings.Count(p => p.TripDate < DateTime.Now) +
+                        customTrips.Count(c => c.Details.Any(d => d.CheckOutDate < DateTime.Now))
                 }
             };
 
             return Ok(result);
         }
     }
-
-
 }
-     

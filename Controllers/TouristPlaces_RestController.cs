@@ -10,16 +10,16 @@ namespace APIs_Graduation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TouristPlaces_RestController : ControllerBase
+    public class TouristPlacesRestController : ControllerBase
     {
         private readonly ApplicationDbContext context;
 
-        public TouristPlaces_RestController(ApplicationDbContext _context)
+        public TouristPlacesRestController(ApplicationDbContext _context)
         {
             context = _context;
         }
 
-        [HttpPost("add-tourist-place")]
+        [HttpPost("addTouristPlace")]
         public async Task<IActionResult> AddTouristPlaces([FromBody] List<TouristPlacesDTO> touristPlacesDto)
         {
             if (touristPlacesDto == null || !touristPlacesDto.Any())
@@ -42,7 +42,7 @@ namespace APIs_Graduation.Controllers
             return Ok(new { Message = "Tourist places added successfully" });
         }
 
-        [HttpGet("all-tourist-places/{cityId}")]
+        [HttpGet("allTouristPlaces/{cityId}")]
         public async Task<IActionResult> GetTouristPlacesByCity(int cityId)
         {
             var places = await context.TouristPlaces
@@ -51,7 +51,6 @@ namespace APIs_Graduation.Controllers
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    // Ensure the picture path does not contain "image/" twice
                     PictureUrl = $"http://safarny.runasp.net/image/{Uri.EscapeDataString(p.PictureUrl.Replace("image/", ""))}",
                     Category = p.Category,
                     Price = (decimal)p.Price,
@@ -69,8 +68,7 @@ namespace APIs_Graduation.Controllers
             return Ok(places);
         }
 
-
-        [HttpGet("tourist-places-details/{id}")]
+        [HttpGet("touristPlacesDetails/{id}")]
         public async Task<IActionResult> GetTouristPlaceDetailsById(int id)
         {
             var place = await context.TouristPlaces
@@ -83,7 +81,6 @@ namespace APIs_Graduation.Controllers
                     Address = p.Address,
                     Rate = (double)p.Rate,
                     Price = (decimal)p.Price,
-                   // PriceDetalis = p.
                 })
                 .FirstOrDefaultAsync();
 
@@ -95,12 +92,11 @@ namespace APIs_Graduation.Controllers
             return Ok(place);
         }
 
-
-        [HttpGet("all-Restaurants/{cityId}")]
+        [HttpGet("allRestaurants/{cityId}")]
         public async Task<IActionResult> GetRestaurantsByCity(int cityId)
         {
-            var Rest = await context.restaurants
-                .Where(p => p.CityId == cityId) // Filter by CityId
+            var rest = await context.restaurants
+                .Where(p => p.CityId == cityId)
                 .Select(p => new
                 {
                     Id = p.Id,
@@ -108,47 +104,45 @@ namespace APIs_Graduation.Controllers
                     PictureUrl = $"http://safarny.runasp.net/rest/{Uri.EscapeDataString(p.PictureUrl.Replace("rest/", ""))}",
                     CityId = p.CityId,
                     Type = p.Type,
-                    rate = p.Rate
-
+                    Rate = p.Rate
                 })
                 .ToListAsync();
 
-            if (!Rest.Any())
+            if (!rest.Any())
             {
                 return NotFound(new { Message = "No Restaurants found for this city." });
             }
 
-            return Ok(Rest);
+            return Ok(rest);
         }
 
+        [HttpPost("addRestaurants")]
+        public async Task<IActionResult> AddRestaurants([FromBody] List<RestaurantsDTO> restaurantDTOs)
+        {
+            if (restaurantDTOs == null || !restaurantDTOs.Any())
+            {
+                return BadRequest("Invalid data.");
+            }
 
-         [HttpPost("add-Restaurants")]
-          public async Task<IActionResult> AddRestaurants([FromBody] List<RestaurantsDTO> restaurantDTOs)
-          {
-              if (restaurantDTOs == null || !restaurantDTOs.Any())
-              {
-                  return BadRequest("Invalid data.");
-              }
+            var restaurants = restaurantDTOs.Select(dto => new Restaurant
+            {
+                Name = dto.Name,
+                PictureUrl = dto.PictureUrl,
+                CityId = dto.CityId,
+                Type = dto.Type,
+                PriceRange = dto.Price_Range,
+                Rate = dto.Rate,
+                DiningOptions = dto.Dining_Options,
+                OpeningHours = dto.Opening_Hours
+            }).ToList();
 
-              var restaurants = restaurantDTOs.Select(dto => new Restaurant
-              {
-                  Name = dto.Name,
-                  PictureUrl = dto.PictureUrl,
-                  CityId = dto.CityId,
-                  Type = dto.Type,
-                  PriceRange = dto.Price_Range,
-                  Rate = dto.Rate,
-                  DiningOptions = dto.Dining_Options,
-                  OpeningHours = dto.Opening_Hours
-              }).ToList();
+            context.restaurants.AddRange(restaurants);
+            await context.SaveChangesAsync();
 
-               context.restaurants.AddRange(restaurants);
-              await context.SaveChangesAsync();
+            return Ok(new { Message = $"{restaurants.Count} restaurant(s) added successfully!" });
+        }
 
-              return Ok(new { Message = $"{restaurants.Count} restaurant(s) added successfully!" });
-          }
-
-        [HttpGet("filter-Restaurants")]
+        [HttpGet("filterRestaurants")]
         public async Task<IActionResult> GetRestaurants([FromQuery] string? diningOptions, [FromQuery] string? rate, [FromQuery] string? type, [FromQuery] string? priceRange, [FromQuery] string? openNow)
         {
             var query = context.restaurants.AsQueryable();
@@ -160,7 +154,7 @@ namespace APIs_Graduation.Controllers
 
             if (!string.IsNullOrWhiteSpace(rate))
             {
-                query = query.Where(r => r.Rate == rate);  // Exact rating match
+                query = query.Where(r => r.Rate == rate);
             }
 
             if (!string.IsNullOrWhiteSpace(type))
@@ -187,7 +181,5 @@ namespace APIs_Graduation.Controllers
 
             return Ok(restaurants);
         }
-
-
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIs_Graduation.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/packages")]
     [ApiController]
     public class PackagesController : ControllerBase
     {
@@ -16,8 +16,8 @@ namespace APIs_Graduation.Controllers
             _context = context;
         }
 
-     
-        [HttpGet("All_Packages")]
+        // GET: api/packages/allPackages
+        [HttpGet("allPackages")]
         public async Task<ActionResult<IEnumerable<object>>> GetAllPackages()
         {
             var packages = await _context.Packages
@@ -34,7 +34,7 @@ namespace APIs_Graduation.Controllers
                     p.Category,
                     ImageUrl = $"http://safarny.runasp.net/Packages/{Uri.EscapeDataString(p.ImageUrl.Replace("Packages/", ""))}",
                     p.CompanyName,
-                    p.FacebookPage,                   
+                    p.FacebookPage,
                     PackagePlans = p.PackagePlans.Select(plan => new { plan.Id, plan.Title, plan.Description }),
                     PackageInclusions = p.PackageInclusions.Select(inc => new { inc.Id, inc.Name }),
                     PackageExclusions = p.PackageExclusions.Select(exc => new { exc.Id, exc.Name })
@@ -48,7 +48,7 @@ namespace APIs_Graduation.Controllers
             return Ok(packages);
         }
 
-      
+        // GET: api/packages/{id}
         [HttpGet("{id:int}")]
         public async Task<ActionResult<object>> GetPackageById(int id)
         {
@@ -67,7 +67,7 @@ namespace APIs_Graduation.Controllers
                     p.Category,
                     ImageUrl = $"http://safarny.runasp.net/Packages/{Uri.EscapeDataString(p.ImageUrl.Replace("Packages/", ""))}",
                     p.CompanyName,
-                    p.FacebookPage,      
+                    p.FacebookPage,
                     PackagePlans = p.PackagePlans.Select(plan => new { plan.Id, plan.Title, plan.Description }),
                     PackageInclusions = p.PackageInclusions.Select(inc => new { inc.Id, inc.Name }),
                     PackageExclusions = p.PackageExclusions.Select(exc => new { exc.Id, exc.Name })
@@ -82,8 +82,8 @@ namespace APIs_Graduation.Controllers
             return Ok(package);
         }
 
-    
-        [HttpPost("Add_Package")]
+        // POST: api/packages/addPackage
+        [HttpPost("addPackage")]
         public async Task<ActionResult<Package>> AddPackage([FromBody] Package package)
         {
             if (package == null)
@@ -103,8 +103,8 @@ namespace APIs_Graduation.Controllers
             return CreatedAtAction(nameof(GetPackageById), new { id = package.PackageId }, package);
         }
 
-    
-        [HttpPost("Add_Packages_Bulk")]
+        // POST: api/packages/addPackagesBulk
+        [HttpPost("addPackagesBulk")]
         public async Task<ActionResult<IEnumerable<Package>>> AddPackagesBulk([FromBody] List<Package> packages)
         {
             if (packages == null || !packages.Any())
@@ -126,6 +126,7 @@ namespace APIs_Graduation.Controllers
             return Ok(packages);
         }
 
+        // PUT: api/packages/{id}
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdatePackage(int id, [FromBody] Package updatedPackage)
         {
@@ -145,7 +146,6 @@ namespace APIs_Graduation.Controllers
                 return NotFound($"Package with ID {id} not found.");
             }
 
-           
             existingPackage.Name = updatedPackage.Name;
             existingPackage.Description = updatedPackage.Description;
             existingPackage.Duration = updatedPackage.Duration;
@@ -155,15 +155,12 @@ namespace APIs_Graduation.Controllers
             existingPackage.CompanyName = updatedPackage.CompanyName;
             existingPackage.FacebookPage = updatedPackage.FacebookPage;
 
-            
             _context.PackagePlans.RemoveRange(existingPackage.PackagePlans);
             existingPackage.PackagePlans = updatedPackage.PackagePlans;
 
-           
             _context.PackageInclusions.RemoveRange(existingPackage.PackageInclusions);
             existingPackage.PackageInclusions = updatedPackage.PackageInclusions;
 
-          
             _context.PackageExclusions.RemoveRange(existingPackage.PackageExclusions);
             existingPackage.PackageExclusions = updatedPackage.PackageExclusions;
 
@@ -172,7 +169,7 @@ namespace APIs_Graduation.Controllers
             return Ok($"Package with ID {id} has been updated successfully.");
         }
 
-
+        // DELETE: api/packages/{id}
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeletePackage(int id)
         {
@@ -187,7 +184,6 @@ namespace APIs_Graduation.Controllers
                 return NotFound($"Package with ID {id} not found.");
             }
 
-          
             var packageImages = _context.Package_Images.Where(img => img.PackageId == id);
             _context.Package_Images.RemoveRange(packageImages);
 
@@ -200,6 +196,7 @@ namespace APIs_Graduation.Controllers
             return Ok($"Package with ID {id} and its images have been deleted.");
         }
 
+        // GET: api/packages/{id}/images
         [HttpGet("{id:int}/images")]
         public async Task<ActionResult<IEnumerable<string>>> GetPackageImages(int id)
         {
@@ -215,7 +212,9 @@ namespace APIs_Graduation.Controllers
 
             return Ok(images);
         }
-        [HttpPost("{id:int}/AddImages")]
+
+        // POST: api/packages/{id}/addImages
+        [HttpPost("{id:int}/addImages")]
         public async Task<IActionResult> AddPackageImages(int id, [FromBody] List<string> imageUrls)
         {
             if (imageUrls == null || !imageUrls.Any())
@@ -240,7 +239,5 @@ namespace APIs_Graduation.Controllers
 
             return Ok($"Images added to package ID {id}.");
         }
-
-
     }
 }

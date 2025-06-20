@@ -4,7 +4,7 @@ using APIs_Graduation.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Route("api/hotel-bookings")]
+[Route("api/hotelbookings")]
 [ApiController]
 public class BookingHotelsController : ControllerBase
 {
@@ -39,7 +39,7 @@ public class BookingHotelsController : ControllerBase
             Username = request.Username,
             Email = request.Email,
             HotelId = request.HotelId,
-            RoomId = request.RoomId, // ✅ حجز غرفة معينة
+            RoomId = request.RoomId,
             CheckInDate = request.CheckInDate,
             CheckOutDate = request.CheckOutDate,
             Status = "Pending",
@@ -60,7 +60,7 @@ public class BookingHotelsController : ControllerBase
             booking.Username,
             booking.Email,
             booking.HotelId,
-            booking.RoomId, // ✅ عرض رقم الغرفة المحجوزة
+            booking.RoomId,
             booking.CheckInDate,
             booking.CheckOutDate,
             booking.Status,
@@ -69,23 +69,22 @@ public class BookingHotelsController : ControllerBase
         });
     }
 
-
     [HttpGet("all")]
     public async Task<IActionResult> GetAllBookings()
     {
         var bookings = await _context.HotelBookings
-            .Include(b => b.Hotel) 
-            .Include(b => b.Room) 
+            .Include(b => b.Hotel)
+            .Include(b => b.Room)
             .Select(b => new
             {
                 b.BookingId,
                 b.Username,
                 b.Email,
                 b.HotelId,
-                HotelName = b.Hotel != null ? b.Hotel.Name : "Unknown", 
+                HotelName = b.Hotel != null ? b.Hotel.Name : "Unknown",
                 HotelImage = b.Hotel != null
                     ? $"http://safarny.runasp.net/Hotel/{Uri.EscapeDataString(b.Hotel.PictureUrl.Replace("Hotel/", ""))}"
-                    : null, 
+                    : null,
                 b.CheckInDate,
                 b.CheckOutDate,
                 b.NumberOfPersons,
@@ -98,14 +97,12 @@ public class BookingHotelsController : ControllerBase
         return Ok(bookings);
     }
 
-
-
     [HttpGet("{id}")]
     public async Task<IActionResult> GetBookingById(int id)
     {
         var booking = await _context.HotelBookings
-            .Include(b => b.Hotel) // جلب بيانات الفندق
-            .Include(b => b.Room)  // جلب بيانات الغرفة المحجوزة
+            .Include(b => b.Hotel)
+            .Include(b => b.Room)
             .Where(b => b.BookingId == id)
             .Select(b => new
             {
@@ -115,7 +112,7 @@ public class BookingHotelsController : ControllerBase
                 b.HotelId,
                 HotelName = b.Hotel.Name,
                 HotelImage = $"http://safarny.runasp.net/Hotel/{Uri.EscapeDataString(b.Hotel.PictureUrl.Replace("Hotel/", ""))}",
-                RoomType = b.Room != null ? b.Room.RoomType : "Not Specified", // في حالة عدم تحديد غرفة
+                RoomType = b.Room != null ? b.Room.RoomType : "Not Specified",
                 RoomPrice = b.Room != null ? b.Room.PricePerNight : 0,
                 b.CheckInDate,
                 b.CheckOutDate,
@@ -129,24 +126,21 @@ public class BookingHotelsController : ControllerBase
 
         return Ok(booking);
     }
+
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteBooking(int id)
     {
-        // البحث عن الحجز باستخدام الـ id
         var booking = await _context.HotelBookings.FindAsync(id);
         if (booking == null)
         {
             return NotFound("Booking not found");
         }
 
-        // حذف المدفوعات المرتبطة بالحجز
         var payments = await _context.Payments.Where(p => p.HotelBookingId == id).ToListAsync();
         _context.Payments.RemoveRange(payments);
 
-        // حذف الحجز
         _context.HotelBookings.Remove(booking);
 
-        // إعادة الغرفة إلى الحالة المتاحة بعد الحذف
         var room = await _context.Rooms.FindAsync(booking.RoomId);
         if (room != null)
         {
@@ -171,8 +165,6 @@ public class BookingHotelsController : ControllerBase
         });
     }
 
-
-
     [HttpPost("cancel/{id}")]
     public async Task<IActionResult> CancelBooking(int id)
     {
@@ -184,7 +176,6 @@ public class BookingHotelsController : ControllerBase
 
         booking.Status = "Cancelled";
 
-        // 🔥 إعادة الغرفة إلى الحالة المتاحة
         var room = await _context.Rooms.FindAsync(booking.RoomId);
         if (room != null)
         {
@@ -208,5 +199,4 @@ public class BookingHotelsController : ControllerBase
             booking.TotalPrice
         });
     }
-
 }

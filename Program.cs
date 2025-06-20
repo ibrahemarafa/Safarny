@@ -28,8 +28,8 @@ namespace APIs_Graduation
 
             builder.Services.AddSingleton<PaymobService>();
             builder.Services.AddSingleton<AlgoliaService>();
-            builder.Services.AddSingleton<DeepSeekService>();
             builder.Services.AddHttpClient<DeepSeekService>();
+            builder.Services.AddScoped<DeepSeekService>();
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 

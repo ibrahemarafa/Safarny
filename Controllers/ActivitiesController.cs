@@ -18,7 +18,7 @@ namespace APIs_Graduation.Controllers
             context = _context;
         }
 
-        [HttpGet("Activities/{touristPlaceId}")]
+        [HttpGet("activities/{touristPlaceId}")]
         public async Task<IActionResult> GetActivitiesByTouristPlaceId(int touristPlaceId)
         {
             var activities = await context.Activities
@@ -39,8 +39,7 @@ namespace APIs_Graduation.Controllers
             return Ok(activities);
         }
 
-
-        [HttpPost("Add-Activities")]
+        [HttpPost("addActivities")]
         public async Task<IActionResult> SeedActivities([FromBody] List<ActivitiesDTO> activitiesDto)
         {
             if (activitiesDto == null || !activitiesDto.Any())
@@ -76,8 +75,7 @@ namespace APIs_Graduation.Controllers
             return Ok(new { Message = $"{activities.Count} activity(ies) added successfully!" });
         }
 
-
-        [HttpGet("GetTouristPlaceDetails/{touristPlaceId}")]
+        [HttpGet("touristPlaceDetails/{touristPlaceId}")]
         public async Task<IActionResult> GetTouristPlaceDetails(int touristPlaceId)
         {
             var touristPlace = await context.TouristPlaces
@@ -96,8 +94,8 @@ namespace APIs_Graduation.Controllers
             }
 
             var topRestaurants = await context.restaurants
-                .Where(r => r.CityId == touristPlace.CityId) 
-                .Take(3) 
+                .Where(r => r.CityId == touristPlace.CityId)
+                .Take(3)
                 .Select(r => new
                 {
                     r.Id,
@@ -112,6 +110,5 @@ namespace APIs_Graduation.Controllers
                 TopRestaurants = topRestaurants
             });
         }
-
     }
 }

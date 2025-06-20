@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIs_Graduation.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/hotels")]
     [ApiController]
     public class HotelsController : ControllerBase
     {
@@ -17,7 +17,7 @@ namespace APIs_Graduation.Controllers
             context = _context;
         }
 
-        [HttpPost("add-hotels")]
+        [HttpPost("addhotels")]
         public async Task<IActionResult> SeedHotels([FromBody] List<HotelDTO> hotelDtos)
         {
             var hotels = hotelDtos.Select(h => new Hotel
@@ -37,12 +37,11 @@ namespace APIs_Graduation.Controllers
             return Ok(new { Message = "Hotels seeded successfully", Count = hotels.Count });
         }
 
-
-        [HttpGet("hotels_of_city/{CityId}")]
-        public async Task<IActionResult> AllHotelsByCityId(int CityId)
+        [HttpGet("hotelsOfCity/{cityId}")]
+        public async Task<IActionResult> AllHotelsByCityId(int cityId)
         {
             var hotels = await context.Hotels
-                .Where(h => h.CityId == CityId)
+                .Where(h => h.CityId == cityId)
                 .Select(h => new
                 {
                     Id = h.Id,
@@ -55,12 +54,11 @@ namespace APIs_Graduation.Controllers
             return Ok(hotels);
         }
 
-
-        [HttpGet("hotel-details/{HotelId}")]
-        public async Task<IActionResult> HotelDetails(int HotelId)
+        [HttpGet("hotelDetails/{hotelId}")]
+        public async Task<IActionResult> HotelDetails(int hotelId)
         {
             var hotel = await context.Hotels
-                .Where(h => h.Id == HotelId)
+                .Where(h => h.Id == hotelId)
                 .Select(h => new
                 {
                     Id = h.Id,
@@ -78,24 +76,8 @@ namespace APIs_Graduation.Controllers
                         .Select(img => new
                         {
                             PictureUrl = $"http://safarny.runasp.net/Hotel/{Uri.EscapeDataString(img.PictureUrl.Replace("Hotel/", ""))}"
-
                         })
                         .ToList(),
-                    /*Rooms = context.Rooms
-                        .Where(r => r.HotelId == h.Id && r.IsAvailable)
-                        .Select(r => new
-                        {
-                            RoomId = r.RoomId,
-                            RoomType = r.RoomType,
-                            Capacity = r.Capacity,
-                            PricePerNight = r.PricePerNight,
-                            IsAvailable = r.IsAvailable,
-                            Features = context.hotel_Room_Features
-                                .Where(f => f.RoomId == r.RoomId)
-                                .Select(f => f.FeatureRoom)
-                                .ToList()
-                        })
-                        .ToList()*/
                 })
                 .FirstOrDefaultAsync();
 
@@ -105,8 +87,7 @@ namespace APIs_Graduation.Controllers
             return Ok(hotel);
         }
 
-
-        [HttpGet("get-rooms-by-hotel/{hotelId}")]
+        [HttpGet("roomsByHotel/{hotelId}")]
         public async Task<IActionResult> GetRoomsByHotel(int hotelId)
         {
             var hotel = await context.Hotels.FindAsync(hotelId);
@@ -128,8 +109,7 @@ namespace APIs_Graduation.Controllers
             return Ok(rooms);
         }
 
-
-        [HttpPost("add-room")]
+        [HttpPost("addRoom")]
         public async Task<IActionResult> AddRoom([FromBody] RoomDTO roomDto)
         {
             var hotel = await context.Hotels.FindAsync(roomDto.HotelId);
@@ -151,36 +131,7 @@ namespace APIs_Graduation.Controllers
             return Ok(new { Message = "Room added successfully", RoomId = room.RoomId });
         }
 
-        
-        //[HttpPost("add-multiple-rooms")]
-        //public async Task<IActionResult> AddRooms([FromBody] List<RoomDTO> roomDtos)
-        //{
-        //    if (roomDtos == null || roomDtos.Count == 0)
-        //        return BadRequest("No rooms provided");
-
-        //    var hotelIds = roomDtos.Select(r => r.HotelId).Distinct().ToList();
-        //    var hotels = await context.Hotels.Where(h => hotelIds.Contains(h.Id)).ToListAsync();
-
-        //    if (hotels.Count != hotelIds.Count)
-        //        return NotFound("Some hotels not found");
-
-        //    var rooms = roomDtos.Select(r => new Room
-        //    {
-        //        HotelId = r.HotelId,
-        //        RoomType = r.RoomType,
-        //        Capacity = r.Capacity,
-        //        PricePerNight = r.PricePerNight,
-        //        IsAvailable = r.IsAvailable
-        //    }).ToList();
-
-        //    await context.Rooms.AddRangeAsync(rooms);
-        //    await context.SaveChangesAsync();
-
-        //    return Ok(new { Message = "Rooms added successfully", Count = rooms.Count });
-        //}
-
-
-        [HttpPost("add_features")]
+        [HttpPost("addFeatures")]
         public async Task<IActionResult> AddHotelFeatures([FromBody] List<HotelFeatureDTO> hotelFeatures)
         {
             if (hotelFeatures == null || hotelFeatures.Count == 0)
@@ -198,30 +149,11 @@ namespace APIs_Graduation.Controllers
             return Ok(new { message = $"{newHotelFeatures.Count} hotel features added successfully." });
         }
 
-        /*  [HttpGet("get-all-rooms")]
-          public async Task<IActionResult> GetAllRooms()
-          {
-              var rooms = await context.Rooms
-                  .Select(r => new RoomDTO
-                  {
-                      RoomId = r.RoomId,
-                      HotelId = r.HotelId,
-                      RoomType = r.RoomType,
-                      Capacity = r.Capacity,
-                      PricePerNight = r.PricePerNight,
-                      IsAvailable = r.IsAvailable
-                  })
-                  .ToListAsync();
-
-              return Ok(rooms);
-          }
-        */
-
         [HttpGet("filter")]
         public async Task<IActionResult> FilterHotels(
-    [FromQuery] string? cityName,
-    [FromQuery] int? rate,
-    [FromQuery] decimal? startPrice)
+            [FromQuery] string? cityName,
+            [FromQuery] int? rate,
+            [FromQuery] decimal? startPrice)
         {
             var query = context.Hotels
                 .Include(h => h.City)
@@ -231,16 +163,14 @@ namespace APIs_Graduation.Controllers
                 query = query.Where(h => h.City.Name.ToLower() == cityName.ToLower());
 
             if (rate.HasValue)
-                query = query.Where(h => h.Rate <= rate.Value); 
+                query = query.Where(h => h.Rate <= rate.Value);
 
             if (startPrice.HasValue)
-                query = query.Where(h => h.StartPrice <= (double)startPrice.Value); 
+                query = query.Where(h => h.StartPrice <= (double)startPrice.Value);
 
             var filteredHotels = await query.ToListAsync();
 
             return Ok(filteredHotels);
         }
-
     }
 }
-

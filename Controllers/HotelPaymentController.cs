@@ -7,7 +7,7 @@ using APIs_Graduation.Services;
 
 namespace APIs_Graduation.Controllers
 {
-    [Route("api/hotel-payments")]
+    [Route("api/hotelpayments")]
     [ApiController]
     public class HotelPaymentController : ControllerBase
     {
@@ -50,10 +50,10 @@ namespace APIs_Graduation.Controllers
             return Ok(new { PaymentUrl = paymentUrl, TotalPrice = totalPrice });
         }
 
-        [HttpPost("payment-webhook")]
+        [HttpPost("paymentwebhook")]
         public async Task<IActionResult> PaymentWebhook([FromBody] PaymobWebhookData data)
         {
-            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.HotelBookingId == data.MerchantOrderId); // استخدام HotelBookingId بدلاً من BookingId
+            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.HotelBookingId == data.MerchantOrderId);
             if (payment == null)
                 return NotFound("Payment not found");
 

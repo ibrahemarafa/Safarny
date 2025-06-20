@@ -7,8 +7,7 @@ using APIs_Graduation.Services;
 
 namespace APIs_Graduation.Controllers
 {
-
-    [Route("api/package-payments")]
+    [Route("api/packagepayments")]
     [ApiController]
     public class PackagePaymentController : ControllerBase
     {
@@ -37,7 +36,7 @@ namespace APIs_Graduation.Controllers
 
             var payment = new Payment
             {
-                PackageBookingId = booking.BookingId, // ربط الـ Payment بالحجز
+                PackageBookingId = booking.BookingId,
                 Amount = totalPrice,
                 Status = "Pending",
                 BookingType = "Package"
@@ -51,7 +50,7 @@ namespace APIs_Graduation.Controllers
             return Ok(new { PaymentUrl = paymentUrl, TotalPrice = totalPrice });
         }
 
-        [HttpPost("payment-webhook")]
+        [HttpPost("paymentwebhook")]
         public async Task<IActionResult> PaymentWebhook([FromBody] PaymobWebhookData data)
         {
             var payment = await _context.Payments.FirstOrDefaultAsync(p => p.PackageBookingId == data.MerchantOrderId);

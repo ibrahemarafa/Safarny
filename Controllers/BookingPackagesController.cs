@@ -67,7 +67,7 @@ public class BookingPackagesController : ControllerBase
                 b.BookingDate,
                 b.Status,
                 b.NumberOfPersons,
-                b.TotalPrice 
+                b.TotalPrice
             })
             .ToListAsync();
 
@@ -89,7 +89,7 @@ public class BookingPackagesController : ControllerBase
                 b.BookingDate,
                 b.Status,
                 b.NumberOfPersons,
-                b.TotalPrice 
+                b.TotalPrice
             })
             .FirstOrDefaultAsync();
 
@@ -121,7 +121,7 @@ public class BookingPackagesController : ControllerBase
             booking.BookingDate,
             booking.Status,
             booking.NumberOfPersons,
-            booking.TotalPrice // ✅ إظهار السعر حتى بعد الإلغاء
+            booking.TotalPrice // عرض السعر حتى بعد الإلغاء
         });
     }
 }

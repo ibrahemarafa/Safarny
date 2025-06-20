@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace YourNamespace.Controllers
 {
@@ -18,7 +19,7 @@ namespace YourNamespace.Controllers
         }
 
         // نقطة النهاية للبحث في Algolia
-        [HttpGet("NormalSearch/{indexKey}")]
+        [HttpGet("normalSearch/{indexKey}")]
         public async Task<ActionResult<IEnumerable<Dictionary<string, object>>>> Search(string indexKey, [FromQuery] string query)
         {
             if (string.IsNullOrWhiteSpace(query))
@@ -26,19 +27,17 @@ namespace YourNamespace.Controllers
                 return BadRequest("The search query cannot be empty.");
             }
 
-            // استدعاء الخدمة لتنفيذ البحث في Algolia
             var results = await _algoliaService.SearchAsync(indexKey, query);
 
-            // التأكد من وجود نتائج
             if (results == null || !results.Any())
             {
                 return NotFound("No results found.");
             }
 
-            return Ok(results); // إرجاع النتائج
+            return Ok(results);
         }
 
-        [HttpPost("ChatWithAI")]
+        [HttpPost("chatWithAI")]
         public async Task<IActionResult> GetAnswer([FromBody] string userQuery)
         {
             if (string.IsNullOrEmpty(userQuery))
@@ -50,7 +49,7 @@ namespace YourNamespace.Controllers
 
             if (result.Contains("Error") || result.Contains("Exception"))
             {
-                return StatusCode(500, result); // Internal server error
+                return StatusCode(500, result);
             }
 
             return Ok(new { answer = result });

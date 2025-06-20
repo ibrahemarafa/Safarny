@@ -1,24 +1,23 @@
 ﻿using APIs_Graduation.Data;
 using APIs_Graduation.DTOs;
 using APIs_Graduation.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIs_Graduation.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cities")]
     [ApiController]
     public class CitiesController : ControllerBase
     {
-        private readonly ApplicationDbContext context;
+        private readonly ApplicationDbContext _context;
 
-        public CitiesController(ApplicationDbContext _context)
+        public CitiesController(ApplicationDbContext context)
         {
-            context = _context;
+            _context = context;
         }
 
-        [HttpPost("add-city")]
+        [HttpPost("addcity")]
         public async Task<IActionResult> AddCities([FromBody] List<City> cities)
         {
             if (cities == null || !cities.Any())
@@ -26,18 +25,16 @@ namespace APIs_Graduation.Controllers
                 return BadRequest("Invalid input data");
             }
 
-            await context.Cities.AddRangeAsync(cities);
-            await context.SaveChangesAsync();
+            await _context.Cities.AddRangeAsync(cities);
+            await _context.SaveChangesAsync();
 
             return Ok("Cities added successfully");
-
         }
-       
-        
-        [HttpGet("all-cities")]
+
+        [HttpGet("allcities")]
         public async Task<IActionResult> GetAllCities()
         {
-            var cities = await context.Cities.Select(c => new
+            var cities = await _context.Cities.Select(c => new
             {
                 c.Id,
                 c.Name,
@@ -47,7 +44,7 @@ namespace APIs_Graduation.Controllers
             return Ok(cities);
         }
 
-        [HttpGet("filter-city")]
+        [HttpGet("filtercity")]
         public async Task<IActionResult> GetCitiesByType([FromQuery] string type)
         {
             if (string.IsNullOrWhiteSpace(type))
@@ -55,7 +52,7 @@ namespace APIs_Graduation.Controllers
                 return BadRequest("Type parameter is required.");
             }
 
-            var cities = await context.Cities
+            var cities = await _context.Cities
                 .Where(c => c.type.Contains(type))
                 .Select(c => new
                 {
@@ -68,8 +65,5 @@ namespace APIs_Graduation.Controllers
 
             return Ok(cities);
         }
-
-
-       
     }
 }

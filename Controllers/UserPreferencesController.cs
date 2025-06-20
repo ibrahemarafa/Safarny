@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace APIs_Graduation.Controllers
 {
@@ -18,41 +19,28 @@ namespace APIs_Graduation.Controllers
             _context = context;
         }
 
-        [HttpPost("SavePreferences")]
+        [HttpPost("savePreferences")]
         public async Task<IActionResult> SavePreferences([FromBody] UserPreference preference)
         {
             if (preference == null)
-            {
                 return BadRequest(new { message = "Invalid preference data." });
-            }
 
-            //تبسيط الكود
             int[] allowedDurations = Enumerable.Range(1, 10).ToArray();
             decimal[] allowedBudgets = Enumerable.Range(1, 20).Select(i => i * 100m).ToArray();
-
             var errors = new List<string>();
 
             if (!allowedDurations.Contains(preference.StayDuration))
-            {
                 errors.Add("Invalid stay duration.");
-            }
 
             if (!allowedBudgets.Contains(preference.Budget))
-            {
                 errors.Add("Invalid budget.");
-            }
 
             if (!Enum.IsDefined(typeof(Category), preference.CategoryPreference))
-            {
                 errors.Add("Invalid category preference.");
-            }
 
             if (errors.Any())
-            {
                 return BadRequest(new { message = "Validation errors", errors });
-            }
 
-            
             var existingPreference = await _context.UserPreferences
                 .FirstOrDefaultAsync(p => p.Username.ToLower() == preference.Username.ToLower());
 
@@ -71,39 +59,32 @@ namespace APIs_Graduation.Controllers
             return Ok(new { message = "Preferences saved successfully." });
         }
 
-        [HttpGet("GetRecommendedPackages/{username}")]
+        [HttpGet("getRecommendedPackages/{username}")]
         public async Task<IActionResult> GetRecommendedPackages(string username)
         {
             var preference = await _context.UserPreferences
                 .FirstOrDefaultAsync(p => p.Username.ToLower() == username.ToLower());
 
             if (preference == null)
-            {
                 return NotFound(new { message = "No preferences found for this user." });
-            }
 
             string categoryPreference = preference.CategoryPreference.ToString().Trim().ToLower();
 
             var allPackages = await _context.Packages
-                .Where(p =>
-                    p.Category.ToLower() == categoryPreference || 
-                    p.Price <= preference.Budget
-                )
-                .ToListAsync(); 
+                .Where(p => p.Category.ToLower() == categoryPreference || p.Price <= preference.Budget)
+                .ToListAsync();
 
-            
             var filteredPackages = allPackages
                 .Where(p =>
-                    !string.IsNullOrEmpty(p.Duration) &&       
-                    p.Duration.Split(' ').Length > 0 &&     
+                    !string.IsNullOrEmpty(p.Duration) &&
+                    p.Duration.Split(' ').Length > 0 &&
                     int.TryParse(p.Duration.Split(' ')[0].Trim(), out int duration) &&
-                    duration <= preference.StayDuration 
+                    duration <= preference.StayDuration
                 )
                 .ToList();
 
-          
             var recommendedPackages = allPackages
-                .Union(filteredPackages)  
+                .Union(filteredPackages)
                 .Distinct()
                 .Select(p => new
                 {
@@ -120,24 +101,19 @@ namespace APIs_Graduation.Controllers
                 .ToList();
 
             if (!recommendedPackages.Any())
-            {
                 return NotFound(new
                 {
                     message = "No suitable packages found.",
                     reason = new
                     {
-                        AvailablePackages = allPackages.Count, 
+                        AvailablePackages = allPackages.Count,
                         Category = categoryPreference,
                         Budget = preference.Budget,
                         StayDuration = preference.StayDuration
                     }
                 });
-            }
 
             return Ok(recommendedPackages);
         }
-
-
-
     }
 }

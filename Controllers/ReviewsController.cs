@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIs_Graduation.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/reviews")]
     [ApiController]
     public class ReviewsController : ControllerBase
     {
@@ -16,7 +16,7 @@ namespace APIs_Graduation.Controllers
             _context = context;
         }
 
-        [HttpGet("GetByPackage/{packageId}")]
+        [HttpGet("getByPackage/{packageId}")]
         public async Task<ActionResult<IEnumerable<Review>>> GetReviewsByPackage(int packageId)
         {
             var reviews = await _context.Reviews
@@ -32,7 +32,7 @@ namespace APIs_Graduation.Controllers
             return Ok(reviews);
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet("getAll")]
         public async Task<ActionResult<IEnumerable<Review>>> GetAllReviews()
         {
             var reviews = await _context.Reviews.Include(r => r.Package).ToListAsync();
@@ -45,7 +45,7 @@ namespace APIs_Graduation.Controllers
             return Ok(reviews);
         }
 
-        [HttpPost("Add")]
+        [HttpPost("add")]
         public async Task<ActionResult<Review>> AddReview([FromBody] Review review)
         {
             if (review == null || review.Rating < 1 || review.Rating > 5)
@@ -67,7 +67,7 @@ namespace APIs_Graduation.Controllers
             return CreatedAtAction(nameof(GetReviewsByPackage), new { packageId = review.PackageId }, review);
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteReview(int id)
         {
             var review = await _context.Reviews.FindAsync(id);
@@ -82,7 +82,7 @@ namespace APIs_Graduation.Controllers
             return Ok("Review deleted successfully.");
         }
 
-        [HttpDelete("DeleteAllByPackage/{packageId}")]
+        [HttpDelete("deleteAllByPackage/{packageId}")]
         public async Task<IActionResult> DeleteAllReviewsByPackage(int packageId)
         {
             var reviews = await _context.Reviews.Where(r => r.PackageId == packageId).ToListAsync();

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIs_Graduation.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/packageinclusions")]
     [ApiController]
     public class PackageInclusionsController : ControllerBase
     {
@@ -16,7 +16,6 @@ namespace APIs_Graduation.Controllers
             _context = context;
         }
 
-       
         [HttpGet("{packageId:int}")]
         public async Task<ActionResult<object>> GetPackageDetails(int packageId)
         {
@@ -37,8 +36,7 @@ namespace APIs_Graduation.Controllers
             });
         }
 
-       
-        [HttpPost("Add_Inclusions/{packageId}")]
+        [HttpPost("addInclusions/{packageId}")]
         public async Task<ActionResult> AddInclusions(int packageId, [FromBody] List<string> inclusionNames)
         {
             if (inclusionNames == null || !inclusionNames.Any())
@@ -55,8 +53,7 @@ namespace APIs_Graduation.Controllers
             return Ok("Inclusions added successfully.");
         }
 
-    
-        [HttpPost("Add_Exclusions/{packageId}")]
+        [HttpPost("addExclusions/{packageId}")]
         public async Task<ActionResult> AddExclusions(int packageId, [FromBody] List<string> exclusionNames)
         {
             if (exclusionNames == null || !exclusionNames.Any())

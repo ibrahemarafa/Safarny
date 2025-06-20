@@ -7,7 +7,7 @@ using APIs_Graduation.Services;
 
 namespace APIs_Graduation.Controllers
 {
-    [Route("api/trip-payments")]
+    [Route("api/tripPayments")]
     [ApiController]
     public class TripPaymentController : ControllerBase
     {
@@ -50,7 +50,7 @@ namespace APIs_Graduation.Controllers
             return Ok(new { PaymentUrl = paymentUrl, TotalPrice = totalPrice });
         }
 
-        [HttpPost("payment-webhook")]
+        [HttpPost("paymentWebhook")]
         public async Task<IActionResult> PaymentWebhook([FromBody] PaymobWebhookData data)
         {
             var payment = await _context.Payments.FirstOrDefaultAsync(p => p.CustomTripBookingId == data.MerchantOrderId);
@@ -63,7 +63,7 @@ namespace APIs_Graduation.Controllers
                 var booking = await _context.BookingCustomTrips.FindAsync(payment.CustomTripBookingId);
                 if (booking != null)
                 {
-                    // تقدر تحدث حالة الحجز لو ضايف Status مثلا
+                    // تحديث حالة الحجز لو حبيت
                     // booking.Status = "Confirmed";
                 }
             }

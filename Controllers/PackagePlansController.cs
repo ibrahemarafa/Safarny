@@ -1,12 +1,11 @@
 ﻿using APIs_Graduation.Data;
 using APIs_Graduation.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIs_Graduation.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/packageplans")]
     [ApiController]
     public class PackagePlansController : ControllerBase
     {
@@ -17,7 +16,6 @@ namespace APIs_Graduation.Controllers
             _context = context;
         }
 
-       
         [HttpGet("{packageId:int}")]
         public async Task<ActionResult<IEnumerable<PackagePlan>>> GetPlansByPackage(int packageId)
         {
@@ -26,27 +24,20 @@ namespace APIs_Graduation.Controllers
                 .ToListAsync();
 
             if (!plans.Any())
-            {
                 return NotFound("No plans found for this package.");
-            }
 
             return Ok(plans);
         }
 
-
-        [HttpPost("Add_Plan")]
+        [HttpPost("addPlan")]
         public async Task<ActionResult> AddPlan([FromBody] PackagePlan plan)
         {
             if (plan == null || plan.PackageId == 0)
-            {
                 return BadRequest("Invalid plan data.");
-            }
 
             bool packageExists = await _context.Packages.AnyAsync(p => p.PackageId == plan.PackageId);
             if (!packageExists)
-            {
                 return NotFound($"Package with ID {plan.PackageId} does not exist.");
-            }
 
             _context.PackagePlans.Add(plan);
             await _context.SaveChangesAsync();
@@ -59,8 +50,5 @@ namespace APIs_Graduation.Controllers
                 plan.PackageId
             });
         }
-
-
     }
-
 }

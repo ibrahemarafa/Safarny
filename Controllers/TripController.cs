@@ -10,7 +10,6 @@ using System.Numerics;
 
 [Route("api/[controller]")]
 [ApiController]
-
 public class TripController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -19,7 +18,6 @@ public class TripController : ControllerBase
     {
         _context = context;
     }
-
 
     [HttpGet("city/{cityId}")]
     public async Task<ActionResult<City>> GetCity(int cityId)
@@ -32,7 +30,6 @@ public class TripController : ControllerBase
         return Ok(city);
     }
 
-
     [HttpGet("places/{cityId}")]
     public async Task<ActionResult<IEnumerable<TouristPlacesDTO>>> GetTouristPlaces(int cityId)
     {
@@ -40,22 +37,19 @@ public class TripController : ControllerBase
             .Where(p => p.CityId == cityId)
             .Select(p => new TouristPlacesDTO
             {
-
                 Name = p.Name,
                 Description = p.Description,
                 PictureUrl = $"http://safarny.runasp.net/image/{Uri.EscapeDataString(p.PictureUrl.Replace("image/", ""))}",
-                CityId= p.CityId,
-                Price=p.Price,
-                Category=p.Category,
+                CityId = p.CityId,
+                Price = p.Price,
+                Category = p.Category,
             })
             .ToListAsync();
 
         return Ok(places);
     }
 
-
-
-    [HttpGet("places-hotels/{cityId}")]
+    [HttpGet("placesHotels/{cityId}")]
     public async Task<ActionResult<CityDTO>> GetPlacesAndHotels(int cityId)
     {
         var places = await _context.TouristPlaces
@@ -96,7 +90,6 @@ public class TripController : ControllerBase
         });
     }
 
-
     [HttpGet("cities")]
     public async Task<ActionResult<IEnumerable<CityDTO>>> GetAllCities()
     {
@@ -107,7 +100,6 @@ public class TripController : ControllerBase
                 {
                     Id = c.Id,
                     Name = c.Name,
-            
                 })
                 .ToListAsync();
 
@@ -120,92 +112,20 @@ public class TripController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Log the exception
             return StatusCode(500, "An error occurred while fetching cities.");
         }
     }
 
-
-
-   /* [HttpPost("select")]
+    /* 
+    [HttpPost("selectTrip")]
     public async Task<ActionResult> SelectTrip([FromBody] TripDTO selection)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        if (selection.EndDate < selection.StartDate)
-        {
-            ModelState.AddModelError("EndDate", "End date must be after start date.");
-            return BadRequest(ModelState);
-        }
-      
-
-
-        try
-        {
-            var places = await _context.TouristPlaces
-                .Where(p => selection.TouristPlaceIds.Contains(p.Id))
-                .ToListAsync();
-            var user = await _context.Users.FindAsync(selection.UserId);
-            var city = await _context.Cities.FindAsync(selection.CityId);
-            var hotel = await _context.Hotels.FindAsync(selection.HotelId);
-            if (user == null || city == null || hotel == null || selection.TouristPlaceIds == null || !selection.TouristPlaceIds.Any())
-            {
-                return NotFound("Invalid selection. Please check the provided IDs.");
-            }
-
-
-            var nights = (selection.EndDate - selection.StartDate).Days;
-            var totalHotelCost = hotel.StartPrice * nights;
-            var totalPlacesCost = places.Sum(p => p.Price);
-            var totalCost = totalHotelCost + totalPlacesCost;
-
-
-            if (totalCost < selection.MinPrice || totalCost > selection.MaxPrice)
-            {
-                return BadRequest($"Total cost ({totalCost}) is outside the budget range ({selection.MinPrice} - {selection.MaxPrice}).");
-            }
-
-            var trip = new Trip
-            {
-                UserId = selection.UserId,
-                CityId = selection.CityId,
-                HotelId = selection.HotelId,
-                StartDate = selection.StartDate,
-                EndDate = selection.EndDate,
-                StarRating =selection.StarRating
-        
-            };
-
-            _context.Trips.Add(trip);
-            await _context.SaveChangesAsync();
-
-
-
-            foreach (var place in places)
-            {
-                _context.Trip_Places.Add(new Trip_Place
-                {
-                    TripId = trip.Id,
-                    PlaceId = place.Id
-                });
-            }
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Trip selection saved successfully", tripId = trip.Id });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "An error occurred while saving the trip.");
-        }
+        // your existing code
     }
-
     */
 
-    [HttpPost("plan-with-budget")]
-   // [Authorize]
+    [HttpPost("planWithBudget")]
+    // [Authorize]
     public async Task<ActionResult<IEnumerable<HotelDTO>>> PlanTripWithBudget([FromBody] TripDTO budgetRange)
     {
         if (!ModelState.IsValid)
@@ -215,11 +135,7 @@ public class TripController : ControllerBase
 
         var nights = (budgetRange.EndDate - budgetRange.StartDate).Days;
 
-
         var hotels = await _context.Hotels
-           // .Where(h => h.CityId == budgetRange.CityId &&
-                      //  h.StartPrice * nights >= budgetRange.MinPrice &&
-                      //  h.StartPrice * nights <= budgetRange.MaxPrice)
             .OrderBy(h => h.StartPrice)
             .Select(h => new HotelDTO
             {
@@ -228,16 +144,11 @@ public class TripController : ControllerBase
                 StartPrice = h.StartPrice,
                 Rate = h.Rate,
                 PictureUrl = $"http://safarny.runasp.net/image/{Uri.EscapeDataString(h.Hotel_Images.FirstOrDefault().PictureUrl.Replace("image/", ""))}",
-               
                 CityId = h.CityId
             })
             .ToListAsync();
 
-        
         var touristPlaces = await _context.TouristPlaces
-           // .Where(p => p.CityId == budgetRange.CityId &&
-                     //   p.Price >= budgetRange.MinPrice &&
-                     //   p.Price <= budgetRange.MaxPrice)
             .OrderBy(p => p.Price)
             .Select(p => new TouristPlacesDTO
             {
@@ -257,19 +168,17 @@ public class TripController : ControllerBase
         });
     }
 
-
-    [HttpGet("view-trips/{userId}")]
+    [HttpGet("viewTrips/{userId}")]
     public async Task<ActionResult<List<UserTripDTO>>> ViewTrips(string userId)
     {
         try
         {
-            
             var trips = await _context.Trips
                 .Where(t => t.UserId == userId)
-                .Include(t => t.City) 
+                .Include(t => t.City)
                 .Include(t => t.TripPlaces)
-                    .ThenInclude(tp => tp.Place) 
-                .Include(t => t.Hotel) 
+                    .ThenInclude(tp => tp.Place)
+                .Include(t => t.Hotel)
                 .ToListAsync();
 
             if (!trips.Any())
@@ -277,7 +186,6 @@ public class TripController : ControllerBase
                 return NotFound("No trips found for this user.");
             }
 
-            
             var userTrips = trips.Select(t => new UserTripDTO
             {
                 TripId = t.Id,
@@ -291,7 +199,6 @@ public class TripController : ControllerBase
                     CityId = tp.Place.CityId,
                     Price = tp.Place.Price,
                     Category = tp.Place.Category,
-                    
                 }).ToList(),
                 Hotel = new HotelDTO
                 {
@@ -299,8 +206,7 @@ public class TripController : ControllerBase
                     Name = t.Hotel.Name,
                     StartPrice = t.Hotel.StartPrice,
                     Rate = t.Hotel.Rate,
-                    PictureUrl = $"http://safarny.runasp.net/image/{Uri.EscapeDataString(t.Hotel.Hotel_Images.FirstOrDefault().PictureUrl.Replace("image/", ""))}"
-               ,
+                    PictureUrl = $"http://safarny.runasp.net/image/{Uri.EscapeDataString(t.Hotel.Hotel_Images.FirstOrDefault().PictureUrl.Replace("image/", ""))}",
                     CityId = t.Hotel.CityId
                 },
                 StartDate = t.StartDate,
@@ -311,21 +217,19 @@ public class TripController : ControllerBase
         }
         catch (Exception ex)
         {
-            
             return StatusCode(500, "An error occurred while fetching trips.");
         }
     }
 
     [HttpGet("search")]
     public async Task<ActionResult<IEnumerable<UserTripDTO>>> SearchTrips(
-[FromQuery] int? cityId,
-[FromQuery] DateTime? startDate,
-[FromQuery] DateTime? endDate,
-[FromQuery] int? hotelId)
+        [FromQuery] int? cityId,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate,
+        [FromQuery] int? hotelId)
     {
         try
         {
-
             if (!cityId.HasValue && !startDate.HasValue && !endDate.HasValue && !hotelId.HasValue)
             {
                 return BadRequest("At least one search parameter is required.");
@@ -342,7 +246,6 @@ public class TripController : ControllerBase
             if (hotelId.HasValue)
                 query = query.Where(t => t.HotelId == hotelId.Value);
 
-
             var trips = await query
                 .Include(t => t.City)
                 .Include(t => t.TripPlaces)
@@ -356,10 +259,7 @@ public class TripController : ControllerBase
                     {
                         Name = tp.Place.Name,
                         Description = tp.Place.Description,
-
                         PictureUrl = $"http://safarny.runasp.net/City/{Uri.EscapeDataString(tp.Place.PictureUrl.Replace("image/", ""))}",
-                    
-                       
                         CityId = tp.Place.CityId,
                         Category = tp.Place.Category
                     }).ToList(),
@@ -367,7 +267,6 @@ public class TripController : ControllerBase
                     {
                         Id = t.Hotel.Id,
                         Name = t.Hotel.Name,
-
                     },
                     StartDate = t.StartDate,
                     EndDate = t.EndDate
@@ -401,7 +300,7 @@ public class TripController : ControllerBase
         return Ok("All trips have been reset.");
     }
 
-    [HttpDelete("delete-trip/{tripId}")]
+    [HttpDelete("deleteTrip/{tripId}")]
     public async Task<IActionResult> DeleteTrip(int tripId)
     {
         var trip = await _context.Trips.FindAsync(tripId);
@@ -417,16 +316,11 @@ public class TripController : ControllerBase
         return Ok(new { message = "Trip deleted successfully!" });
     }
 
-
-
-
-
-    [HttpGet("clear-filters")]
+    [HttpGet("clearFilters")]
     public async Task<ActionResult<FilterResponseDTO>> ClearFilters()
     {
         try
         {
-            
             var defaultCities = await _context.Cities
                 .Take(10)
                 .Select(c => new CityDTO
@@ -445,8 +339,7 @@ public class TripController : ControllerBase
                     Name = h.Name,
                     StartPrice = h.StartPrice,
                     Rate = h.Rate,
-                    PictureUrl = $"http://safarny.runasp.net/image/{Uri.EscapeDataString(h.Hotel_Images.FirstOrDefault().PictureUrl.Replace("image/", ""))}"
-               ,
+                    PictureUrl = $"http://safarny.runasp.net/image/{Uri.EscapeDataString(h.Hotel_Images.FirstOrDefault().PictureUrl.Replace("image/", ""))}",
                     CityId = h.CityId
                 })
                 .ToListAsync();
@@ -479,12 +372,4 @@ public class TripController : ControllerBase
             return StatusCode(500, "An error occurred while clearing filters.");
         }
     }
-
-   
 }
-
-
-
-
-
-
