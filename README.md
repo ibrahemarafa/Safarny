@@ -97,6 +97,7 @@ Here is a summary of the main tables with primary keys (PK) and foreign key rela
 
 The Safarny application uses a relational database to manage users, cities, hotels, restaurants, places, packages, trips, bookings, and chatbot queries.
 
+'''yaml
 users:
   - userId: PK
   - username
@@ -148,7 +149,7 @@ places:
   - cityId: FK references cities.cityId
   - placeName
   - description
-  - activities  
+  - activities  # text or linked table
   - mainImageUrl
   - rating
   - createdAt
@@ -188,8 +189,8 @@ customTrips:
 bookings:
   - bookingId: PK
   - userId: FK references users.userId
-  - bookingType  
-  - referenceId  
+  - bookingType  # e.g., hotel, package, customTrip
+  - referenceId  # FK depending on bookingType, e.g., hotelRoomId, packageId, tripId
   - numberOfPeople
   - bookingDate
   - totalPrice
@@ -203,4 +204,4 @@ chatbotQueries:
   - question
   - response
   - queryDate
-
+'''
