@@ -205,3 +205,157 @@ chatbotQueries:
   - response
   - queryDate
 ```
+## UML Diagram
+
+The UML diagram illustrates the relationships between the core entities of the Safarny smart tourism platform.
+ذذذ
+ذذ
++--------------------------------------+
+|             User                     |
++--------------------------------------+
+| userId: Long                         |
+| username: String                     |
+| email: String                       |
+| passwordHash: String                 |
+| role: Role                          |
+| phoneNumber: String                 |
+| createdAt: DateTime                 |
+| updatedAt: DateTime                 |
+| bookings: List<Booking>             |
+| customTrips: List<CustomTrip>       |
+| packageReviews: List<PackageReview> |
+| chatbotQueries: List<ChatbotQuery>  |
++--------------------------------------+
+
++--------------------------------------+
+|             City                     |
++--------------------------------------+
+| cityId: Long                        |
+| cityName: String                   |
+| description: String                 |
+| category: String                   |
+| imageUrl: String                   |
+| hotels: List<Hotel>                |
+| restaurants: List<Restaurant>       |
+| places: List<Place>                 |
++--------------------------------------+
+
++--------------------------------------+
+|             Hotel                    |
++--------------------------------------+
+| hotelId: Long                      |
+| cityId: Long                      |
+| hotelName: String                  |
+| description: String                |
+| features: String                  |
+| rating: Float                     |
+| mainImageUrl: String              |
+| createdAt: DateTime               |
+| updatedAt: DateTime               |
+| rooms: List<HotelRoom>             |
++--------------------------------------+
+
++--------------------------------------+
+|           HotelRoom                  |
++--------------------------------------+
+| roomId: Long                      |
+| hotelId: Long                    |
+| roomType: String                 |
+| pricePerNight: Decimal           |
+| availabilityCount: Int           |
++--------------------------------------+
+
++--------------------------------------+
+|          Restaurant                  |
++--------------------------------------+
+| restaurantId: Long                |
+| cityId: Long                    |
+| restaurantName: String           |
+| cuisineType: String              |
+| description: String              |
+| rating: Float                   |
+| mainImageUrl: String            |
+| createdAt: DateTime             |
+| updatedAt: DateTime             |
++--------------------------------------+
+
++--------------------------------------+
+|             Place                   |
++--------------------------------------+
+| placeId: Long                    |
+| cityId: Long                    |
+| placeName: String                |
+| description: String              |
+| activities: String or List<String> |
+| mainImageUrl: String            |
+| rating: Float                   |
+| createdAt: DateTime             |
+| updatedAt: DateTime             |
++--------------------------------------+
+
++--------------------------------------+
+|            Package                  |
++--------------------------------------+
+| packageId: Long                  |
+| packageName: String              |
+| description: String              |
+| durationDays: Int                |
+| price: Decimal                  |
+| itineraryDetails: String         |
+| includedServices: String         |
+| excludedServices: String         |
+| averageRating: Float             |
+| createdAt: DateTime             |
+| updatedAt: DateTime             |
+| reviews: List<PackageReview>     |
++--------------------------------------+
+
++--------------------------------------+
+|         PackageReview               |
++--------------------------------------+
+| reviewId: Long                   |
+| packageId: Long                 |
+| userId: Long                    |
+| rating: Int                    |
+| comment: String                |
+| createdAt: DateTime            |
++--------------------------------------+
+
++--------------------------------------+
+|          CustomTrip                 |
++--------------------------------------+
+| tripId: Long                    |
+| userId: Long                   |
+| startDate: DateTime            |
+| endDate: DateTime              |
+| totalPrice: Decimal            |
+| tripDetails: String (JSON)     |
+| createdAt: DateTime            |
+| updatedAt: DateTime            |
++--------------------------------------+
+
++--------------------------------------+
+|            Booking                  |
++--------------------------------------+
+| bookingId: Long                 |
+| userId: Long                   |
+| bookingType: String            |
+| referenceId: Long              |
+| numberOfPeople: Int            |
+| bookingDate: DateTime          |
+| totalPrice: Decimal            |
+| paymentStatus: String          |
+| createdAt: DateTime            |
+| updatedAt: DateTime            |
++--------------------------------------+
+
++--------------------------------------+
+|          ChatbotQuery               |
++--------------------------------------+
+| queryId: Long                   |
+| userId: Long                   |
+| question: String               |
+| response: String               |
+| queryDate: DateTime            |
++--------------------------------------+
+
