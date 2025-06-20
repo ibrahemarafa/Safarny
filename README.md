@@ -208,8 +208,8 @@ chatbotQueries:
 ## UML Diagram
 
 The UML diagram illustrates the relationships between the core entities of the Safarny smart tourism platform.
-ذذذ
-ذذ
+
+```yaml
 +--------------------------------------+
 |             User                     |
 +--------------------------------------+
@@ -358,4 +358,4 @@ The UML diagram illustrates the relationships between the core entities of the S
 | response: String               |
 | queryDate: DateTime            |
 +--------------------------------------+
-
+```
