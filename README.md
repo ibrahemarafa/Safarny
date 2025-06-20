@@ -87,4 +87,129 @@ With AI-powered assistance and rich content, Safarny transforms travel planning 
   - Custom trips
 - Integrated with Paymob or any third-party payment gateway.
 
+## 🗄️ Database Schema
+
+The Safarny application uses a relational database to organize data for users, cities, hotels, restaurants, places, packages, custom trips, bookings, and chatbot queries.
+
+Here is a summary of the main tables with primary keys (PK) and foreign key relationships (FK):
+
+### Table: users
+- userId (PK)  
+- username  
+- email  
+- passwordHash  
+- role (e.g., Tourist, Admin)  
+- phoneNumber  
+- createdAt  
+- updatedAt  
+
 ---
+
+### Table: cities
+- cityId (PK)  
+- cityName  
+- description  
+- category (Ancient Egypt, Beaches, Cities, Sports)  
+- imageUrl  
+
+---
+
+### Table: hotels
+- hotelId (PK)  
+- cityId (FK references cities.cityId)  
+- hotelName  
+- description  
+- features (e.g., view, wifi, pool)  
+- rating  
+- mainImageUrl  
+- createdAt  
+- updatedAt  
+
+---
+
+### Table: hotelRooms
+- roomId (PK)  
+- hotelId (FK references hotels.hotelId)  
+- roomType (e.g., single, double, suite)  
+- pricePerNight  
+- availabilityCount  
+
+---
+
+### Table: restaurants
+- restaurantId (PK)  
+- cityId (FK references cities.cityId)  
+- restaurantName  
+- cuisineType (e.g., Chinese, Breakfast, Egyptian)  
+- description  
+- rating  
+- mainImageUrl  
+- createdAt  
+- updatedAt  
+
+---
+
+### Table: places
+- placeId (PK)  
+- cityId (FK references cities.cityId)  
+- placeName  
+- description  
+- activities (text or linked table)  
+- mainImageUrl  
+- rating  
+- createdAt  
+- updatedAt  
+
+---
+
+### Table: packages
+- packageId (PK)  
+- packageName  
+- description  
+- durationDays  
+- price  
+- itineraryDetails (day by day plan)  
+- includedServices  
+- excludedServices  
+- averageRating  
+- createdAt  
+- updatedAt  
+
+---
+
+### Table: packageReviews
+- reviewId (PK)  
+- packageId (FK references packages.packageId)  
+- userId (FK references users.userId)  
+- rating  
+- comment  
+- createdAt  
+
+---
+
+### Table: customTrips
+- tripId (PK)  
+- userId (FK references users.userId)  
+- startDate  
+- endDate  
+- totalPrice  
+- tripDetails (JSON or detailed plan)  
+- createdAt  
+- updatedAt  
+
+---
+
+### Table: bookings
+- bookingId (PK)  
+- userId (FK references users.userId)  
+- bookingType (e.g., hotel, package, customTrip)  
+- referenceId (FK depending on bookingType, e.g., hotelRoomId, packageId, tripId)  
+- numberOfPeople  
+- bookingDate  
+- totalPrice  
+- paymentStatus  
+- createdAt  
+- updatedAt  
+
+---
+
