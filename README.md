@@ -93,6 +93,10 @@ The Safarny application uses a relational database to organize data for users, c
 
 Here is a summary of the main tables with primary keys (PK) and foreign key relationships (FK):
 
+## 🗄️ Database Schema
+
+The Safarny application uses a relational database to manage users, cities, hotels, restaurants, places, packages, trips, bookings, and chatbot queries.
+
 ### Table: users
 - userId (PK)  
 - username  
@@ -103,16 +107,12 @@ Here is a summary of the main tables with primary keys (PK) and foreign key rela
 - createdAt  
 - updatedAt  
 
----
-
 ### Table: cities
 - cityId (PK)  
 - cityName  
 - description  
 - category (Ancient Egypt, Beaches, Cities, Sports)  
 - imageUrl  
-
----
 
 ### Table: hotels
 - hotelId (PK)  
@@ -125,16 +125,12 @@ Here is a summary of the main tables with primary keys (PK) and foreign key rela
 - createdAt  
 - updatedAt  
 
----
-
 ### Table: hotelRooms
 - roomId (PK)  
 - hotelId (FK references hotels.hotelId)  
 - roomType (e.g., single, double, suite)  
 - pricePerNight  
 - availabilityCount  
-
----
 
 ### Table: restaurants
 - restaurantId (PK)  
@@ -147,8 +143,6 @@ Here is a summary of the main tables with primary keys (PK) and foreign key rela
 - createdAt  
 - updatedAt  
 
----
-
 ### Table: places
 - placeId (PK)  
 - cityId (FK references cities.cityId)  
@@ -159,8 +153,6 @@ Here is a summary of the main tables with primary keys (PK) and foreign key rela
 - rating  
 - createdAt  
 - updatedAt  
-
----
 
 ### Table: packages
 - packageId (PK)  
@@ -175,8 +167,6 @@ Here is a summary of the main tables with primary keys (PK) and foreign key rela
 - createdAt  
 - updatedAt  
 
----
-
 ### Table: packageReviews
 - reviewId (PK)  
 - packageId (FK references packages.packageId)  
@@ -184,8 +174,6 @@ Here is a summary of the main tables with primary keys (PK) and foreign key rela
 - rating  
 - comment  
 - createdAt  
-
----
 
 ### Table: customTrips
 - tripId (PK)  
@@ -196,8 +184,6 @@ Here is a summary of the main tables with primary keys (PK) and foreign key rela
 - tripDetails (JSON or detailed plan)  
 - createdAt  
 - updatedAt  
-
----
 
 ### Table: bookings
 - bookingId (PK)  
@@ -211,5 +197,10 @@ Here is a summary of the main tables with primary keys (PK) and foreign key rela
 - createdAt  
 - updatedAt  
 
----
+### Table: chatbotQueries
+- queryId (PK)  
+- userId (FK references users.userId)  
+- question  
+- response  
+- queryDate  
 
