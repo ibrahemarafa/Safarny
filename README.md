@@ -11,8 +11,7 @@
 - [Database Schema](#database-schema)
 - [UML Diagram](#uml-diagram)
 - [Requirements Specification](#requirements-specification)
-- [Use Case Diagram](#use-case-diagram)
-- [ERD Diagram](#erd-diagram)
+- [Flowchart](#flowchart)
 
 ---
 
@@ -359,3 +358,80 @@ The UML diagram illustrates the relationships between the core entities of the S
 | queryDate: DateTime            |
 +--------------------------------------+
 ```
+## Requirements Specification
+
+Software Requirements Specification (SRS) is the process of documenting all system and user requirements. Below is a detailed explanation of the functional and non-functional requirements of the **Safarny** smart tourism platform.
+
+### Functional Requirements
+
+These define what the system does, highlighting the features and functions the application offers.
+
+#### User Registration and Login
+- Tourists and Admins can create new accounts and log in.
+- Secure authentication and role-based authorization to control access to different parts of the platform.
+
+#### Tourist Features
+- **Smart Onboarding:**  
+  Users answer three key questions (budget, trip type, and duration of stay) to receive personalized travel package suggestions.
+
+- **Browse Categories:**  
+  Tourists can explore categories such as Ancient Egypt, Beaches, Cities, and Sports.
+
+- **City Exploration:**  
+  Users can select a city (e.g., Cairo, Alexandria) and explore:  
+  - Hotels (with features, images, room availability, booking, and payment).  
+  - Restaurants (with cuisine type filters like Chinese, Breakfast).  
+  - Tourist Places (with activities and descriptions).
+
+- **Packages Section:**  
+  Users can browse ready-made travel packages including:  
+  - Detailed day-by-day itineraries.  
+  - Information about included and excluded services.  
+  - Ratings and reviews.  
+  - Booking for multiple persons with online payment.
+
+- **Plan Your Trip:**  
+  Allows users to customize trips by selecting cities, activities, and hotels.  
+  - Displays total cost, trip duration, and schedule.  
+  - Enables booking and payment online.
+
+- **AI Chatbot:**  
+  Provides instant answers to travel-related questions (e.g., directions between cities, best family-friendly spots) powered by AI integration.
+
+#### Admin Features
+- Manage content including cities, hotels, restaurants, tourist places, and packages.  
+- Approve user-generated content and monitor platform usage.
+
+#### Booking and Payment
+- Support online payments for hotels, packages, and custom trips through integrated payment gateways.
+
+---
+
+### Non-Functional Requirements
+
+These specify the operational capabilities and constraints of the system.
+
+- **Performance:**  
+  The platform should respond to user interactions and page loads within 3 seconds under normal network conditions.
+
+- **Security:**  
+  User data, including login credentials and payment information, is securely encrypted. Authentication uses JWT tokens and best practices in password storage.
+
+- **Availability:**  
+  The system should maintain high availability (aiming for 99.9% uptime), with planned maintenance during low-traffic periods.
+
+- **Scalability:**  
+  The platform must support increasing numbers of users and data without significant performance degradation.
+## Flow Charts
+
+The Flow Charts provide a visual representation of the main user journeys and processes within the Safarny platform. These diagrams help to understand how users interact with the system through different workflows.
+
+### Login Flow
+This flow chart illustrates the step-by-step process for user authentication, including registration, login, and role-based access control for tourists and admins.
+![Login Flow](https://github.com/user-attachments/assets/297b8232-4cb6-4e06-8f46-f6dd88573a6d)
+
+### Trip Builder Flow
+This flow chart shows how users create and customize their own trips by selecting cities, activities, hotels, and how the system calculates the total cost and trip duration before final booking.
+
+Refer to the Flow Charts section or attached diagram files for detailed visualizations of these processes.
+![Trip Builder Flow](https://github.com/user-attachments/assets/fefe26fd-36d1-418d-a392-827bfa4b3f07)
