@@ -1,22 +1,22 @@
 # Platform - Safarny ✈️
 
 ## 📚 Table of Contents
-- [Overview](#overview)
-- [Background](#background)
-- [Features](#features)
+- [Overview](#-overview)
+- [Background](#-background)
+- [Features](#-features)
   - [User Registration and Login](#user-registration-and-login)
   - [Tourist Features](#tourist-features)
   - [Admin Features](#admin-features)
   - [Payment Integration](#payment-integration)
-- [Database Schema](#database-schema)
+- [Database Schema](#️-database-schema)
 - [UML Diagram](#uml-diagram)
 - [Requirements Specification](#requirements-specification)
-- [Flowchart](#flowchart)
+- [Flow Charts](#flow-charts)
 
 ---
 
 ## 🧭 Overview
-Welcome to **Safarny** – a smart tourism platform that helps travelers explore Egypt with ease, efficiency, and intelligence. Whether you're a solo tourist, a couple, or a family, Safarny connects you with the best travel experiences, hotels, restaurants, and historical sites across Egypt. This document presents an overview of the project, its purpose, and how to interact with it.
+Welcome to **Safarny** a smart tourism platform that helps travelers explore Egypt with ease, efficiency, and intelligence. Whether you're a solo tourist, a couple, or a family, Safarny connects you with the best travel experiences, hotels, restaurants, and historical sites across Egypt. This document presents an overview of the project, its purpose, and how to interact with it.
 
 ---
 
@@ -432,6 +432,5 @@ This flow chart illustrates the step-by-step process for user authentication, in
 
 ### Trip Builder Flow
 This flow chart shows how users create and customize their own trips by selecting cities, activities, hotels, and how the system calculates the total cost and trip duration before final booking.
-
 Refer to the Flow Charts section or attached diagram files for detailed visualizations of these processes.
 ![Trip Builder Flow](https://github.com/user-attachments/assets/fefe26fd-36d1-418d-a392-827bfa4b3f07)
